@@ -1,0 +1,2 @@
+# IKCoin
+IKCoin Cryptocurrency Project
