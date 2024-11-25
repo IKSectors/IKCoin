@@ -1,0 +1,188 @@
+import React, { useContext, useState, useEffect } from "react";
+import { TransactionContext } from "../context/TransactionContext";
+import { Loader } from ".";
+import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
+ 
+import { register } from "../slices/auth";
+import { clearMessage } from "../slices/message";
+
+const companyCommonStyles = "min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white";
+
+const Input = ({ placeholder, name, type, value, handleChangeB }) => (
+  <input
+    placeholder={placeholder}
+    type={type}
+    step="0.0001"
+    value={value}
+    onChange={(e) => handleChangeB(e, name)}
+    className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
+  />
+);
+
+const Reg = () => {
+  const { handleChangeB, sendTransaction, formBData, isLoading } = useContext(TransactionContext);
+
+  const [successful, setSuccessful] = useState(false);
+
+  const { message } = useSelector((state) => state.message);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(clearMessage());
+  }, [dispatch]);
+
+  const initialValues = {
+    userName: "",
+    email: "",
+    password: "",
+  };
+
+  const validationSchema = Yup.object().shape({
+    userName: Yup.string()
+      .test(
+        "len",
+        "The username must be between 3 and 20 characters.",
+        (val) =>
+          val &&
+          val.toString().length >= 3 &&
+          val.toString().length <= 20
+      )
+      .required("This field is required!"),
+    email: Yup.string()
+      .email("This is not a valid email.")
+      .required("This field is required!"),
+    password: Yup.string()
+      .test(
+        "len",
+        "The password must be between 6 and 20 characters.",
+        (val) =>
+          val &&
+          val.toString().length >= 6 &&
+          val.toString().length <= 20
+      )
+      .required("This field is required!"),
+  });
+
+  const handleRegister = (formValue) => {
+    const { email, userName, fullName, password, phone } = formValue;
+
+    setSuccessful(false);
+
+    const mapStateToProps = state => {
+      return {
+         expenses: state
+      };
+   };
+
+    dispatch(register({ email, userName, fullName, password, phone }))
+      .unwrap()
+      .then(() => {
+        setSuccessful(true);
+      })
+      .catch(() => {
+        setSuccessful(false);
+      });
+  };
+
+  const handleSubmit = (e) => {
+    const { email, userName, fullName, password, phone } = formBData;
+
+    e.preventDefault();
+
+    if (!email || !userName || !fullName || !password) return;
+
+    //addReg
+
+    sendTransaction();
+
+  };
+
+  return (
+    <div className="flex w-full justify-center items-center">
+      <div className="flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4">
+        <div className="flex flex-1 justify-start items-start flex-col mf:mr-10">
+          <h1 className="text-3xl sm:text-5xl text-white text-gradient py-1">
+            Register to Send Crypto <br /> across the world
+          </h1>
+          <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
+            IKCoin Is The Future!
+          </p>
+          
+
+          <div className="grid sm:grid-cols-3 grid-cols-2 w-full mt-10">
+            <div className={`rounded-tl-2xl ${companyCommonStyles}`}>
+              Dynamic
+            </div>
+            <div className={companyCommonStyles}>Metaverse</div>
+            <div className={`sm:rounded-tr-2xl ${companyCommonStyles}`}>
+              Max Secure
+            </div>
+            <div className={`sm:rounded-bl-2xl ${companyCommonStyles}`}>
+              Smart Currencies
+            </div>
+            <div className={companyCommonStyles}>Low Fees</div>
+            <div className={`rounded-br-2xl ${companyCommonStyles}`}>
+              Blockchain
+            </div>
+          </div>
+        </div>
+
+      <Formik initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleRegister}
+      >
+      <form> { !successful && (
+        <div className="flex flex-col flex-1 items-center justify-start w-full mf:mt-0 mt-10">
+          <div className="p-5 sm:w-96 w-full flex flex-col justify-start items-center blue-glassmorphism">
+           
+            <Input placeholder="Email" name="email" type="text"  />
+            <ErrorMessage
+                    name="email"
+                    component="div"
+                    className="alert alert-danger"
+                  />
+            <Input placeholder="Username" name="userName" type="text" />
+            <ErrorMessage
+                    name="username"
+                    component="div"
+                    className="alert alert-danger"
+                  />
+            <Input placeholder="Full Name" name="fullName" type="text" />
+            <Input placeholder="Date of Birth" name="dateOfBirth" type="text" />
+            <Input placeholder="Password" name="password" type="text" />
+            <ErrorMessage
+                    name="password"
+                    component="div"
+                    className="alert alert-danger"
+                  />
+            <Input placeholder="Phone" name="phone" type="text" />
+
+            <div className="h-[1px] w-full bg-gray-400 my-2" />
+
+            {isLoading
+              ? <Loader />
+              : (
+                <button
+                    type="submit"
+                    
+                    className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
+                  >
+                    Submit
+                  </button>
+                
+              )}
+            
+          </div>
+        </div>
+        )}
+      </form>
+      </Formik>
+      </div>
+    </div>
+  );
+};
+
+export default Reg;
