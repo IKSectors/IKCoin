@@ -1,5 +1,5 @@
 # IKCoin - Web 3.0 Blockchain Application
-![IKCoin](https://i.ibb.co/DVF4tNW/image.png)
+![IKCoin](https://ibb.co/JnThxjq)
 
 ## Introduction
 This is a code repository for the corresponding video tutorial.
