@@ -1,0 +1,9 @@
+export { default as Loader } from "./Loader";
+export { default as RegForm } from "./RegForm";
+export { default as Navbar } from "./Navbar";
+export { default as NavbarB } from "./NavbarB";
+export { default as Connect } from "./Connect";
+export { default as Footer } from "./Footer";
+export { default as Services } from "./Services";
+export { default as ContactForm } from "./ContactForm"
+export { default as Transactions } from "./Transactions";
